@@ -15,7 +15,7 @@ const createTransaction = (req: Request, res: Response) => {
     const transaction: ITransaction = {
         id: crypto.randomUUID(),
         createdAt: new Date(),
-        ...req.body?.invoices.map((invoice: any) => ({ ...invoice, status })),
+        invoices:req.body?.invoices.map((invoice: any) => ({ ...invoice, status })),
     };
 
     return res.status(201).json({
