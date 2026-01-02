@@ -18,10 +18,7 @@ const createTransaction = (req: Request, res: Response) => {
         invoices:req.body?.invoices.map((invoice: any) => ({ ...invoice, status })),
     };
 
-    return res.status(201).json({
-        message: "Transaction created",
-        data: transaction,
-    });
+    return res.status(201).json(transaction);
 };
 
 export default createTransaction;
