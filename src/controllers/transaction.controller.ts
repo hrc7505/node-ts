@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import ITransaction from "../types/transaction";
 import { log } from "node:console";
 
-const statuses = ["Scheduled", "Processing", "Paid", "Failed", "Cancelled"];
+const statuses = ["Processing", "Paid", "Failed", "Cancelled"];
 
 const createTransaction = (req: Request, res: Response) => {
     log("HEADERS:", req.headers);
@@ -15,7 +15,7 @@ const createTransaction = (req: Request, res: Response) => {
     const transaction: ITransaction = {
         id: crypto.randomUUID(),
         createdAt: new Date(),
-        invoices:req.body?.invoices.map((invoice: any) => ({ ...invoice, status })),
+        invoices: req.body?.invoices.map((invoice: any) => ({ ...invoice, status: invoice.scheduledDate ? "Scheduled" : status })) || [],
     };
 
     return res.status(201).json(transaction);
