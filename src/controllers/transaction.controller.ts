@@ -18,7 +18,7 @@ const createTransaction = (req: Request, res: Response) => {
         invoices: req.body?.invoices.map((invoice: any) => ({
             ...invoice,
             status: req.body.isCancel
-                ? "Cancelled"
+                ? "Open"
                 : invoice.scheduledDate
                     ? "Scheduled"
                     : status,
