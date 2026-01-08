@@ -36,12 +36,6 @@ AV3Los57tV/kox8DYqGtVjo=
 -----END PRIVATE KEY-----`;
 
 const pay = async (req: Request, res: Response) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.setHeader(
-        "Access-Control-Allow-Headers",
-        "Content-Type, Authorization"
-    );
     try {
         const apiPath = "/api/v2.0/payments/pay";
         const method = "POST";
