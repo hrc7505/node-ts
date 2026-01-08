@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { pki, md } from "node-forge";
-import { v4 as uuidv4 } from "uuid";
+import crypto from "node:crypto";
+
 
 const API_HOST = "https://openapi.alphapay.ca";
 const MERCHANT_CODE = "ZZZ6";
@@ -41,12 +42,12 @@ const pay = async (req: Request, res: Response) => {
         const method = "POST";
 
         const requestTime = new Date().toISOString();
-        const nonce = uuidv4().replace(/-/g, "").slice(0, 32);
+        const nonce = crypto.randomBytes(16).toString("hex"); // 32 chars
 
         // Body MUST be exactly what is sent
         const bodyJson = JSON.stringify({
             scenarioCode: "ONLINE_QRCODE",
-            paymentRequestId: uuidv4(),
+            paymentRequestId: crypto.randomUUID(),
             order: {
                 orderAmount: {
                     value: req.body.amount,
