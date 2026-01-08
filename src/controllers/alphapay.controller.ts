@@ -46,7 +46,7 @@ const pay = async (req: Request, res: Response) => {
         // Body MUST be exactly what is sent
         const bodyJson = JSON.stringify({
             scenarioCode: "ONLINE_QRCODE",
-            paymentRequestId: req.body.orderId,
+            paymentRequestId: uuidv4(),
             order: {
                 orderAmount: {
                     value: req.body.amount,
@@ -93,7 +93,7 @@ const pay = async (req: Request, res: Response) => {
 
         return res.status(response.status).json(data);
     } catch (error) {
-        console.error("AlphaPay error:", error);
+        console.error(`${req.body.paymentMethodType} error:`, error);
         return res.status(500).json({ message: "Payment QR generation failed" });
     }
 };
