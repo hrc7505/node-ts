@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
+    "build": "tsc && yarn copy-static",
+    "start": "node dist/server.js",
+    "copy-static": "copyfiles -u 1 .well-known/**/* dist/.well-known"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +23,7 @@
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.3",
     "@types/node-forge": "^1.3.14",
+    "copyfiles": "^2.4.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
