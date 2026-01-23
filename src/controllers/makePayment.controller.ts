@@ -6,7 +6,8 @@ import sendWebhook from "../services/webhookService";
 import createSignature from "../utils/createSignature";
 
 const makePayment = (req: Request, res: Response) => {
-    log("makePayment");
+    log("makePayment headers::",req.headers);
+    log("makePayment body::",req.body);
     const { batchId, callbackUrl, invoices } = req.body;
 
     if (!batchId || !callbackUrl || !Array.isArray(invoices)) {
