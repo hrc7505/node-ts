@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { log } from "node:console";
 
-import { getBatch, saveBatch } from "../store/batchStore";
 import sendWebhook from "../services/webhookService";
 
 type WebhookPayload = {
@@ -12,75 +11,29 @@ type WebhookPayload = {
     }>;
 };
 
-const makePayment = (req: Request, res: Response) => {
-    try {
-        log("makePayment headers::", req.headers);
-        log("makePayment body::", JSON.stringify(req.body));
+const makePayment = async (req: Request, res: Response) => {
+    const { callbackUrl, batches } = req.body;
 
-        const { callbackUrl, batches } = req.body;
+    if (!callbackUrl || !Array.isArray(batches)) {
+        return res.status(400).json({ error: "Invalid payload" });
+    }
 
-        if (!callbackUrl || !Array.isArray(batches) || batches.length === 0) {
-            throw new Error("Invalid payload: callbackUrl and batches required");
-        }
+    for (const batch of batches) {
+        //saveBatch(batch);
 
-        const webhookPayload: WebhookPayload = {
-            batches: []
-        };
-
-        // 🔒 Idempotency + validation
-        for (const batch of batches) {
-            if (!batch.batchId || !batch.vendorNo || !Array.isArray(batch.invoices)) {
-                throw new Error("Invalid batch structure");
-            }
-
-            const existing = getBatch(batch.batchId);
-            if (existing) {
-                return res.status(400).json({
-                    batchId: batch.batchId,
-                    status: existing.status
-                });
-            }
-
-            saveBatch({
-                batchId: batch.batchId,
-                vendorNo: batch.vendorNo,
-                invoices: batch.invoices,
-                callbackUrl,
-                status: "Processing"
-            });
-
-            const paymentReference = "chiizu_pr_" + crypto.randomUUID();
-
-            webhookPayload.batches.push({
+        setTimeout(async () => {
+            await sendWebhook(callbackUrl, {
                 batchId: batch.batchId,
                 status: "Paid",
-                paymentReference
+                paymentReference: "chiizu_pr_" + crypto.randomUUID()
             });
-        }
-
-        log("callbackUrl:", callbackUrl);
-
-        // 🔁 Simulate async settlement
-        const t = setTimeout(async () => {
-            log("Sending webhook for batches:", batches.map(b => b.batchId));
-
-            await sendWebhook(callbackUrl, webhookPayload);
-
-            clearTimeout(t);
-        }, 10000);
-
-        return res.status(200).json({
-            /* status: "Processing",
-            batches: batches.map((b: any) => ({
-                batchId: b.batchId,
-                status: "Processing"
-            })) */
-           success: true
-        });
-    } catch (error) {
-        log("makePayment error::", error);
-        return res.status(400).json({ error: (error as Error).message });
+        }, 5000);
     }
+
+    res.status(201).json({
+        status: "Processing",
+        batchCount: batches.length
+    });
 };
 
 export default makePayment;
