@@ -1,6 +1,6 @@
 import { log } from "node:console";
 
-export default async function sendWebhook(BC_WEBHOOK_URL: string, payload: any, signature: string) {
+export default async function sendWebhook(BC_WEBHOOK_URL: string, payload: any) {
     try {
         log("Sending webhook to:", BC_WEBHOOK_URL);
         const response = await fetch(BC_WEBHOOK_URL, {

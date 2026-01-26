@@ -1,6 +1,7 @@
 type Batch = {
     batchId: string;
     callbackUrl: string;
+    vendorNo: string;
     invoices: any[];
     status: 'Processing' | 'Paid' | 'Failed';
 };
