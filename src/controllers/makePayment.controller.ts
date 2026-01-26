@@ -15,7 +15,7 @@ type WebhookPayload = {
 const makePayment = (req: Request, res: Response) => {
     try {
         log("makePayment headers::", req.headers);
-        log("makePayment body::", req.body);
+        log("makePayment body::", JSON.stringify(req.body));
 
         const { callbackUrl, batches } = req.body;
 
