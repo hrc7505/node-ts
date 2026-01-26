@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-
 import { log } from "node:console";
+
 import { getBatch, saveBatch } from "../store/batchStore";
 import sendWebhook from "../services/webhookService";
 import createSignature from "../utils/createSignature";
 
 const makePayment = (req: Request, res: Response) => {
-    log("makePayment headers::",req.headers);
-    log("makePayment body::",req.body);
+    log("makePayment headers::", req.headers);
+    log("makePayment body::", req.body);
     const { batchId, callbackUrl, invoices } = req.body;
 
     if (!batchId || !callbackUrl || !Array.isArray(invoices)) {
@@ -32,11 +32,13 @@ const makePayment = (req: Request, res: Response) => {
     });
 
     const paymentReference = "chiizu_pr_" + crypto.randomUUID();
+    const signature = createSignature(req.body, process.env.CHIIZU_BC_WEBHOOK_SECRET!);
+    log("Generated signature:", signature);
+    log("callbackUrl:", callbackUrl);
 
     // Simulate async success
     const t = setTimeout(async () => {
-        clearTimeout(t);
-        const signature = createSignature(req.body, process.env.CHIIZU_BC_WEBHOOK_SECRET!);
+        log("Sending webhook for batchId:", batchId);
         await sendWebhook(
             callbackUrl,
             {
@@ -46,6 +48,7 @@ const makePayment = (req: Request, res: Response) => {
             },
             signature
         );
+        clearTimeout(t);
     }, 10000);
 
     return res.status(201).json({
