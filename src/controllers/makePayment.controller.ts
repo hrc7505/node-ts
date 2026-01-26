@@ -69,12 +69,13 @@ const makePayment = (req: Request, res: Response) => {
             clearTimeout(t);
         }, 10000);
 
-        return res.status(201).json({
-            status: "Processing",
+        return res.status(200).json({
+            /* status: "Processing",
             batches: batches.map((b: any) => ({
                 batchId: b.batchId,
                 status: "Processing"
-            }))
+            })) */
+           success: true
         });
     } catch (error) {
         log("makePayment error::", error);
