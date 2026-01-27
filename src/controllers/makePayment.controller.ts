@@ -1,17 +1,25 @@
 import { Request, Response } from "express";
-import { log } from "node:console";
 
 import sendWebhook from "../services/webhookService";
 
 type WebhookPayload = {
     batches: Array<{
         batchId: string;
-        status: 'Paid';
+        status: 'Paid' | 'Failed';
         paymentReference: string;
     }>;
 };
 
-const makePayment = async (req: Request, res: Response) => {
+type RequestBody = {
+    callbackUrl: string;
+    batches: Array<{
+        batchId: string;
+        invoices: any[];
+        vendorNo: string;
+    }>;
+};
+
+const makePayment = async (req: Request<any, any, RequestBody>, res: Response) => {
     const { callbackUrl, batches } = req.body;
 
     if (!callbackUrl || !Array.isArray(batches)) {
@@ -32,7 +40,7 @@ const makePayment = async (req: Request, res: Response) => {
 
     res.status(201).json({
         status: "Processing",
-        batchCount: batches.length
+        acceptedBatches: batches.map(batch => batch.batchId)
     });
 };
 
