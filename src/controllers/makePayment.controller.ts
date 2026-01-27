@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import sendWebhook from "../services/webhookService";
+import { log } from "node:console";
 
 type WebhookPayload = {
     batches: Array<{
@@ -21,6 +22,8 @@ type RequestBody = {
 
 const makePayment = async (req: Request<any, any, RequestBody>, res: Response) => {
     const { callbackUrl, batches } = req.body;
+    
+    log("makePayment::", batches, callbackUrl);
 
     if (!callbackUrl || !Array.isArray(batches)) {
         return res.status(400).json({ error: "Invalid payload" });
