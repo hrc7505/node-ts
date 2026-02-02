@@ -29,7 +29,7 @@ const makePayment = async (req: Request<any, any, RequestBody>, res: Response) =
         return res.status(400).json({ error: "Invalid payload" });
     }
 
-    for (const batch of batches) {
+/*     for (const batch of batches) {
         //saveBatch(batch);
 
         setTimeout(async () => {
@@ -39,7 +39,7 @@ const makePayment = async (req: Request<any, any, RequestBody>, res: Response) =
                 paymentReference: "chiizu_pr_" + crypto.randomUUID()
             });
         }, 5000);
-    }
+    } */
 
     res.status(201).json({
         status: "Processing",
