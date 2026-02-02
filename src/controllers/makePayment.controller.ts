@@ -18,28 +18,31 @@ type RequestBody = {
         invoices: any[];
         vendorNo: string;
     }>;
+    bankAccountNo: string;
 };
 
 const makePayment = async (req: Request<any, any, RequestBody>, res: Response) => {
-    const { callbackUrl, batches } = req.body;
-    
-    log("makePayment::", batches, callbackUrl);
+    const { callbackUrl, batches, bankAccountNo } = req.body;
+
+    log("makePayment bankAccountNo::", bankAccountNo);
+    log("makePayment batches::", batches);
+    log("makePayment callbackUrl::", callbackUrl);
 
     if (!callbackUrl || !Array.isArray(batches)) {
         return res.status(400).json({ error: "Invalid payload" });
     }
 
-/*     for (const batch of batches) {
-        //saveBatch(batch);
-
-        setTimeout(async () => {
-            await sendWebhook(callbackUrl, {
-                batchId: batch.batchId,
-                status: "Paid",
-                paymentReference: "chiizu_pr_" + crypto.randomUUID()
-            });
-        }, 5000);
-    } */
+    /*     for (const batch of batches) {
+            //saveBatch(batch);
+    
+            setTimeout(async () => {
+                await sendWebhook(callbackUrl, {
+                    batchId: batch.batchId,
+                    status: "Paid",
+                    paymentReference: "chiizu_pr_" + crypto.randomUUID()
+                });
+            }, 5000);
+        } */
 
     res.status(201).json({
         status: "Processing",
