@@ -9,6 +9,7 @@ const router = Router();
 
 // BC
 router.post("/create-payment", makePayment);
+router.post("/schedule-payment", makePayment);
 router.post("/connect-chiizu", connectChiizu);
 router.post("/disconnect-chiizu", disconnectChiizu);
 
