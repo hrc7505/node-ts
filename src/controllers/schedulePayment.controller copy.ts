@@ -27,7 +27,8 @@ const schedulePayment = async (req: Request<any, any, RequestBody>, res: Respons
 
     res.status(201).json({
         status: "Scheduled",
-        acceptedBatches: batches.map(batch => batch.batchId)
+        acceptedBatches: batches.map(batch => batch.batchId),
+        scheduleDate,
     });
 };
 
