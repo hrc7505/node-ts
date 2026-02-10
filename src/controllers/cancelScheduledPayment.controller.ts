@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { log } from "node:console";
 
 const cancelScheduledPayment = async (req: Request, res: Response) => {
-    log("cancelScheduledPayment headers::", req.headers);
     log("cancelScheduledPayment body::", req.body);
 
     res.status(201).json({
