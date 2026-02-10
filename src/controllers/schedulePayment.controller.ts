@@ -20,7 +20,7 @@ const schedulePayment = async (req: Request<any, any, RequestBody>, res: Respons
     log("schedulePayment batches::", batches);
     log("schedulePayment callbackUrl::", callbackUrl);
     log("schedulePayment scheduledDate::", scheduledDate);
-    log(JSON.stringify(req.body));
+    log("full log:",JSON.stringify(req.body));
 
     if (!callbackUrl || !Array.isArray(batches)) {
         return res.status(400).json({ error: "Invalid payload" });
