@@ -4,7 +4,7 @@ import pay from "../controllers/alphapay.controller";
 import makePayment from "../controllers/makePayment.controller";
 import connectChiizu from "../controllers/connectChiizu.controller";
 import disconnectChiizu from "../controllers/disconnectChiizu.controller";
-import schedulePayment from "../controllers/schedulePayment.controller copy";
+import schedulePayment from "../controllers/schedulePayment.controller";
 import cancelScheduledPayments from "../controllers/cancelScheduledPayments.controller";
 
 const router = Router();
