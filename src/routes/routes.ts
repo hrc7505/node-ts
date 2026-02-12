@@ -6,6 +6,7 @@ import connectChiizu from "../controllers/connectChiizu.controller";
 import disconnectChiizu from "../controllers/disconnectChiizu.controller";
 import schedulePayment from "../controllers/schedulePayment.controller";
 import cancelScheduledPayments from "../controllers/cancelScheduledPayment.controller";
+import fundingAccounts from "../controllers/fundingAccounts.controller";
 
 const router = Router();
 
@@ -15,6 +16,7 @@ router.post("/schedule-payment", schedulePayment);
 router.post("/cancel-scheduled-payment", cancelScheduledPayments);
 router.post("/connect-chiizu", connectChiizu);
 router.post("/disconnect-chiizu", disconnectChiizu);
+router.post("/funding-accounts", fundingAccounts);
 
 // Afterpay
 router.post("/pay", pay);
