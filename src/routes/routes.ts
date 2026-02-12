@@ -16,7 +16,7 @@ router.post("/schedule-payment", schedulePayment);
 router.post("/cancel-scheduled-payment", cancelScheduledPayments);
 router.post("/connect-chiizu", connectChiizu);
 router.post("/disconnect-chiizu", disconnectChiizu);
-router.post("/funding-accounts", fundingAccounts);
+router.get("/funding-accounts", fundingAccounts);
 
 // Afterpay
 router.post("/pay", pay);
