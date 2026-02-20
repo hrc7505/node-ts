@@ -94,7 +94,7 @@ const pay = async (req: Request, res: Response) => {
 
         return res.status(response.status).json({
             statusCode: response.status,
-            result: data.result || null,
+            result: data,
         });
     } catch (error) {
         console.error(`${req.body.paymentMethodType} error:`, error);
