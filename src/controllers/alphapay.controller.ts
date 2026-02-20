@@ -92,10 +92,13 @@ const pay = async (req: Request, res: Response) => {
 
         const data = await response.json();
 
-        return res.status(response.status).json(data);
+        return res.status(response.status).json({
+            statusCode: response.status,
+            result: data.result || null,
+        });
     } catch (error) {
         console.error(`${req.body.paymentMethodType} error:`, error);
-        return res.status(500).json({ message: "Payment QR generation failed" });
+        return res.status(400).json({ statusCode: 400, error: "Payment QR generation failed" });
     }
 };
 
