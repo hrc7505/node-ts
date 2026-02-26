@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { log } from "node:console";
 
-const createRandomBalance = () => Math.floor(Math.random() * 500000) + 10000;
-
 const fundingAccounts = async (req: Request, res: Response) => {
     log("funding-accounts headers::", req.headers);
 
@@ -16,7 +14,7 @@ const fundingAccounts = async (req: Request, res: Response) => {
                 accountNumber: "1234567890",
                 accountType: "Checking",
                 currencyCode: "USD",
-                balance: createRandomBalance(),
+                balance: -2228.50 // Sum of -1267.50 and -961.00
             },
             {
                 id: "ACC-002",
@@ -24,7 +22,7 @@ const fundingAccounts = async (req: Request, res: Response) => {
                 accountNumber: "0987654321",
                 accountType: "Savings",
                 currencyCode: "USD",
-                balance: createRandomBalance(),
+                balance: -2228.50 // Sum of -1267.50 and -961.00
             },
             {
                 id: "ACC-003",
@@ -32,7 +30,7 @@ const fundingAccounts = async (req: Request, res: Response) => {
                 accountNumber: "5566778899",
                 accountType: "Checking",
                 currencyCode: "CAD",
-                balance: createRandomBalance(),
+                balance: -2228.50 // Sum of -1267.50 and -961.00
             }
         ]
     };
