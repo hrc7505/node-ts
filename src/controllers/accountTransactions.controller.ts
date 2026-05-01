@@ -10,10 +10,10 @@ const accountTransactions = async (req: Request, res: Response) => {
     // These amounts and dates now match the Ledger Entries in image_2565d1.png
     const transactions = [
         {
-            id: "UTR182374", // Using the Ext. Doc No seen in BC for better matching
+            id: "UTR01", // Using the Ext. Doc No seen in BC for better matching
             date: "2026-05-01", // Matches Posting Date for Fabrikam, Inc.
-            description: "Microsoft Corporation - Payment for Invoice #108234", // Matches the description in BC
-            amount: -11727 // Exact match for Ledger Entry amount
+            description: "Microsoft Corporation - Payment for Invoice #108235", // Matches the description in BC
+            amount: -451.60 // Exact match for Ledger Entry amount
         },
     ];
 
