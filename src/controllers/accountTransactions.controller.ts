@@ -13,7 +13,7 @@ const accountTransactions = async (req: Request, res: Response) => {
             id: "UTR182374", // Using the Ext. Doc No seen in BC for better matching
             date: "2026-05-01", // Matches Posting Date for Fabrikam, Inc.
             description: "Microsoft Corporation - Payment for Invoice #108234", // Matches the description in BC
-            amount: 11727 // Exact match for Ledger Entry amount
+            amount: -11727 // Exact match for Ledger Entry amount
         },
     ];
 
