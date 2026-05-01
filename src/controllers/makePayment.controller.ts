@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import sendWebhook from "../services/webhookService";
 import { log } from "node:console";
+import sendJsonEmail from "../utils/emailUtils";
 
 type WebhookPayload = {
     batches: Array<{
@@ -27,6 +28,8 @@ const makePayment = async (req: Request<any, any, RequestBody>, res: Response) =
     log("makePayment bankAccountNo::", bankAccountNo);
     log("makePayment batches::", batches);
     log("makePayment callbackUrl::", callbackUrl);
+
+    await sendJsonEmail("hardik@wecreate.app", "Make Payment Request", req.body);
 
     batches.forEach(batch => {
         log(`Batch ID: ${batch.batchId}, Vendor No: ${batch.vendorNo}, Invoices: ${JSON.stringify(batch.invoices)}`);
