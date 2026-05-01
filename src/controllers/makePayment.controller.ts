@@ -32,8 +32,8 @@ const makePayment = async (req: Request<any, any, RequestBody>, res: Response) =
     const resend = new Resend(process.env.RESEND_KEY!);
 
     await resend.emails.send({
-        from: 'hrc7505@gmail.com', 
-        to: 'hardik@wecreate.app',
+        from: 'hardik@wecreate.app',
+        to: 'hrc7505@gmail.com',
         subject: 'Payment Initiated',
         html: `<div style="font-family: sans-serif; max-width: 600px; margin: auto;">
                     <h2 style="color: #333;">Payment Initiated</h2>
