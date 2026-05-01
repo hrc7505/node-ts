@@ -32,7 +32,7 @@ const makePayment = async (req: Request<any, any, RequestBody>, res: Response) =
     const resend = new Resend(process.env.RESEND_KEY!);
 
     await resend.emails.send({
-        from: 'hardik@wecreate.app',
+        from: 'onboarding@resend.dev',
         to: 'hrc7505@gmail.com',
         subject: 'Payment Initiated',
         html: `<div style="font-family: sans-serif; max-width: 600px; margin: auto;">
@@ -41,7 +41,7 @@ const makePayment = async (req: Request<any, any, RequestBody>, res: Response) =
                     <pre style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px;">
                         <code>${JSON.stringify(req.body, null, 2)}</code>
                     </pre>
-                </div>`
+                </div>`,
     });
 
     batches.forEach(batch => {
