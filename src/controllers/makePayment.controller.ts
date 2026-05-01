@@ -28,6 +28,10 @@ const makePayment = async (req: Request<any, any, RequestBody>, res: Response) =
     log("makePayment batches::", batches);
     log("makePayment callbackUrl::", callbackUrl);
 
+    batches.forEach(batch => {
+        log(`Batch ID: ${batch.batchId}, Vendor No: ${batch.vendorNo}, Invoices: ${JSON.stringify(batch.invoices)}`);
+    });
+
     if (!callbackUrl || !Array.isArray(batches)) {
         return res.status(400).json({ error: "Invalid payload" });
     }
