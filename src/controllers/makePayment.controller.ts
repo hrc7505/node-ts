@@ -33,7 +33,7 @@ const makePayment = async (req: Request<any, any, RequestBody>, res: Response) =
 
     await resend.emails.send({
         from: 'onboarding@resend.dev',
-        to: 'hardik@wecreate.dev',
+        to: 'hardik@wecreate.app',
         subject: 'Payment Initiated',
         html: `<div style="font-family: sans-serif; max-width: 600px; margin: auto;">
                     <h2 style="color: #333;">Payment Initiated</h2>
