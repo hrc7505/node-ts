@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import sendWebhook from "../services/webhookService";
 import { log } from "node:console";
-import sendJsonEmail from "../utils/emailUtils";
+import { Resend } from "resend";
 
 type WebhookPayload = {
     batches: Array<{
@@ -29,7 +29,20 @@ const makePayment = async (req: Request<any, any, RequestBody>, res: Response) =
     log("makePayment batches::", batches);
     log("makePayment callbackUrl::", callbackUrl);
 
-    await sendJsonEmail("hardik@wecreate.app", "Make Payment Request", req.body);
+    const resend = new Resend(process.env.RESEND_KEY!);
+
+    await resend.emails.send({
+        from: 'hardik@wecreate.app',
+        to: 'hrc7505@gmail.com',
+        subject: 'Payment Initiated',
+        html: `<div style="font-family: sans-serif; max-width: 600px; margin: auto;">
+                    <h2 style="color: #333;">Payment Initiated</h2>
+                    <p style="color: #666;">Here is the structured data you requested:</p>
+                    <pre style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px;">
+                        <code>${JSON.stringify(req.body, null, 2)}</code>
+                    </pre>
+                </div>`
+    });
 
     batches.forEach(batch => {
         log(`Batch ID: ${batch.batchId}, Vendor No: ${batch.vendorNo}, Invoices: ${JSON.stringify(batch.invoices)}`);
