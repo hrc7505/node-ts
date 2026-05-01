@@ -11,16 +11,10 @@ const accountTransactions = async (req: Request, res: Response) => {
     const transactions = [
         {
             id: "UTR182374", // Using the Ext. Doc No seen in BC for better matching
-            date: "2026-02-16", // Matches Posting Date for Fabrikam, Inc.
-            description: "Fabrikam, Inc.", 
-            amount: -1267.50 // Exact match for Ledger Entry amount
+            date: "2026-05-01", // Matches Posting Date for Fabrikam, Inc.
+            description: "Microsoft Corporation - Payment for Invoice #108234", // Matches the description in BC
+            amount: 11727 // Exact match for Ledger Entry amount
         },
-        {
-            id: "UTR182375",
-            date: "2026-02-19", // Matches Posting Date for First Up Consultants
-            description: "First Up Consultants",
-            amount: -961.00 // Exact match for Ledger Entry amount
-        }
     ];
 
     // Important: For the reconciliation math to balance (Total Difference = 0), 
