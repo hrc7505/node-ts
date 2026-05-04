@@ -20,16 +20,9 @@ const accountTransactions = async (req: Request, res: Response) => {
         // You can add more mock transactions here later
     ];
 
-    // Optional: Filter the mock data based on the dates BC requested
-    // (If you just want it to return the mock data no matter what, you can skip this filter)
-    const filteredTransactions = allTransactions.filter(txn => {
-        if (!start || !end) return true;
-        return txn.date >= (start as string) && txn.date <= (end as string);
-    });
-
     res.status(200).json({
         accountId: accountId,
-        transactions: filteredTransactions,
+        transactions: allTransactions,
     });
 };
 
