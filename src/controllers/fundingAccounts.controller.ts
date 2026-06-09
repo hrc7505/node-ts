@@ -30,7 +30,7 @@ const fundingAccounts = async (req: Request, res: Response) => {
                 accountNumber: "5566778899",
                 accountType: "Checking",
                 currencyCode: "CAD",
-                balance: -2228.50 // Sum of -1267.50 and -961.00
+                balance: 2228.50 // Sum of -1267.50 and -961.00
             }
         ]
     };
