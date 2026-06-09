@@ -1,16 +1,7 @@
 import { Request, Response } from "express";
 
-import sendWebhook from "../services/webhookService";
 import { log } from "node:console";
 import { Resend } from "resend";
-
-type WebhookPayload = {
-    batches: Array<{
-        batchId: string;
-        status: 'Paid' | 'Failed';
-        paymentReference: string;
-    }>;
-};
 
 type RequestBody = {
     callbackUrl: string;
@@ -24,7 +15,7 @@ type RequestBody = {
 
 const makePayment = async (req: Request<any, any, RequestBody>, res: Response) => {
     const { callbackUrl, batches, bankAccountNo } = req.body;
-
+    log("makePayment", req.headers);
     log("makePayment bankAccountNo::", bankAccountNo);
     log("makePayment batches::", batches);
     log("makePayment callbackUrl::", callbackUrl);
@@ -51,18 +42,6 @@ const makePayment = async (req: Request<any, any, RequestBody>, res: Response) =
     if (!callbackUrl || !Array.isArray(batches)) {
         return res.status(400).json({ error: "Invalid payload" });
     }
-
-    /*     for (const batch of batches) {
-            //saveBatch(batch);
-    
-            setTimeout(async () => {
-                await sendWebhook(callbackUrl, {
-                    batchId: batch.batchId,
-                    status: "Paid",
-                    paymentReference: "chiizu_pr_" + crypto.randomUUID()
-                });
-            }, 5000);
-        } */
 
     res.status(201).json({
         status: "Processing",
