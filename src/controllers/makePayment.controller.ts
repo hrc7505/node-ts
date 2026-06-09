@@ -15,7 +15,7 @@ type RequestBody = {
 
 const makePayment = async (req: Request<any, any, RequestBody>, res: Response) => {
     const { callbackUrl, batches, bankAccountNo } = req.body;
-    log("makePayment", req.headers);
+    log("makePayment", JSON.stringify(req.headers));
     log("makePayment bankAccountNo::", bankAccountNo);
     log("makePayment batches::", batches);
     log("makePayment callbackUrl::", callbackUrl);
