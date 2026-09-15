@@ -76,14 +76,6 @@ const COUNTRY_REQUIREMENTS: Record<string, BankFieldDefinition[]> = {
             maxLength: 12,
             regex: "^[0-9]{5,12}$",
             description: "Canadian Bank Account Number"
-        },
-        {
-            key: "INTERAC_HANDLE",
-            label: "Interac Recipient Handle",
-            type: "string",
-            required: false,
-            maxLength: 80,
-            description: "Interac e-Transfer email or Canadian mobile number"
         }
     ],
     IN: [
