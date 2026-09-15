@@ -9,13 +9,29 @@ import cancelScheduledPayments from "../controllers/cancelScheduledPayment.contr
 import fundingAccounts from "../controllers/fundingAccounts.controller";
 import accountTransactions from "../controllers/accountTransactions.controller";
 import { createPayments, getPaymentStatus, manualSettlePayment } from "../controllers/payments.controller";
+import { getBankAccountRequirements } from "../controllers/bankRequirements.controller";
+import { verifyBankAccount } from "../controllers/bankVerification.controller";
+import { getAccountCapabilities } from "../controllers/capabilities.controller";
 
 const router = Router();
 
+// Bank Account Requirements (Dynamic UI & Validation Metadata)
+router.get("/bank-account-requirements", getBankAccountRequirements);
+router.get("/v1/bank-account-requirements", getBankAccountRequirements);
+
+// Bank Account Verification & Capability Assessment
+router.post("/accounts/verify", verifyBankAccount);
+router.post("/v1/accounts/verify", verifyBankAccount);
+router.get("/accounts/:id/capabilities", getAccountCapabilities);
+router.get("/v1/accounts/:id/capabilities", getAccountCapabilities);
+
 // Chiizu Enterprise Payments API
 router.post("/payments", createPayments);
+router.post("/v1/payments", createPayments);
 router.get("/payments/:id", getPaymentStatus);
+router.get("/v1/payments/:id", getPaymentStatus);
 router.post("/payments/:id/settle", manualSettlePayment);
+router.post("/v1/payments/:id/settle", manualSettlePayment);
 
 // Bank Feeds & Account Endpoints
 router.get("/funding-accounts", fundingAccounts);
