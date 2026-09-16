@@ -12,7 +12,8 @@ app.use(cors({
 
 app.use(express.json());
 
-// Support both /api and root /v1 paths
+// Support root paths and /api prefix
+app.use("/", router);
 app.use("/api", router);
 
 export default app;
