@@ -11,7 +11,7 @@ import accountTransactions from "../controllers/accountTransactions.controller";
 import { createPayments, getPaymentStatus, manualSettlePayment } from "../controllers/payments.controller";
 import { getBankAccountRequirements } from "../controllers/bankRequirements.controller";
 import { verifyBankAccount } from "../controllers/bankVerification.controller";
-import { getAccountCapabilities } from "../controllers/capabilities.controller";
+import { getAccountCapabilities, queryPaymentCapabilities } from "../controllers/capabilities.controller";
 
 const router = Router();
 
@@ -26,6 +26,8 @@ router.post("/accounts/verify", verifyBankAccount);
 router.post("/v1/accounts/verify", verifyBankAccount);
 router.get("/accounts/:id/capabilities", getAccountCapabilities);
 router.get("/v1/accounts/:id/capabilities", getAccountCapabilities);
+router.post("/payments/capabilities", queryPaymentCapabilities);
+router.post("/v1/payments/capabilities", queryPaymentCapabilities);
 
 // Chiizu Enterprise Payments API
 router.post("/payments", createPayments);
