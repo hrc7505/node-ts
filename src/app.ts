@@ -12,8 +12,18 @@ app.use(cors({
 
 app.use(express.json());
 
+import path from "path";
+
+app.use(express.static(path.join(__dirname, "public")));
+
+// Serve Studio UI on root
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 // Support root paths and /api prefix
 app.use("/", router);
 app.use("/api", router);
 
 export default app;
+
