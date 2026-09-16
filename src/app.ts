@@ -21,6 +21,12 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// Serve Business Central Web Client Simulator
+app.get(["/bc", "/bc-client"], (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "bc.html"));
+});
+
+
 // Support root paths and /api prefix
 app.use("/", router);
 app.use("/api", router);
