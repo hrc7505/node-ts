@@ -146,31 +146,102 @@ SEPA_COUNTRIES.forEach(c => {
     COUNTRY_REQUIREMENTS[c] = COUNTRY_REQUIREMENTS["EU"];
 });
 
+const DESTINATION_REQUIREMENTS: Record<string, Record<string, BankFieldDefinition[]>> = {
+    BANK_ACCOUNT: COUNTRY_REQUIREMENTS,
+    RECIPIENT: {
+        CA: [
+            {
+                key: "RECIPIENT_IDENTIFIER",
+                label: "Interac Recipient (Email / Mobile)",
+                type: "string",
+                required: true,
+                maxLength: 80,
+                description: "Designated Email address or Canadian mobile number (+1...)"
+            }
+        ],
+        DEFAULT: [
+            {
+                key: "RECIPIENT_IDENTIFIER",
+                label: "Recipient Email or Handle",
+                type: "string",
+                required: true,
+                maxLength: 80,
+                description: "Recipient email or identifier"
+            }
+        ]
+    },
+    WALLET: {
+        DEFAULT: [
+            {
+                key: "WALLET_ID",
+                label: "Digital Wallet ID",
+                type: "string",
+                required: true,
+                maxLength: 100,
+                description: "Digital wallet unique address or identifier"
+            }
+        ]
+    },
+    UPI: {
+        IN: [
+            {
+                key: "UPI_ID",
+                label: "UPI Virtual Payment Address (VPA)",
+                type: "string",
+                required: true,
+                maxLength: 50,
+                regex: "^[a-zA-Z0-9.\\-_]{2,256}@[a-zA-Z]{2,64}$",
+                description: "Virtual Payment Address (e.g. username@upi or bank)"
+            }
+        ],
+        DEFAULT: [
+            {
+                key: "UPI_ID",
+                label: "UPI ID",
+                type: "string",
+                required: true,
+                maxLength: 50,
+                description: "UPI Virtual Payment Address"
+            }
+        ]
+    }
+};
+
 export const getBankAccountRequirements = async (req: Request, res: Response) => {
     const country = ((req.query.country || req.query.countryCode || "CA") as string).toUpperCase();
     const paymentMethod = req.query.paymentMethod ? (req.query.paymentMethod as string).toUpperCase() : undefined;
     const currency = req.query.currency ? (req.query.currency as string).toUpperCase() : undefined;
+    const destinationType = ((req.query.destinationType || "BANK_ACCOUNT") as string).toUpperCase();
 
-    log(`📋 [GET /bank-account-requirements] country=${country}, method=${paymentMethod}, currency=${currency}`);
+    log(`📋 [GET /payment-requirements] country=${country}, method=${paymentMethod}, currency=${currency}, destinationType=${destinationType}`);
 
-    const fields = COUNTRY_REQUIREMENTS[country] || [
-        {
-            key: "ACCOUNT_NUMBER",
-            label: "Bank Account Number",
-            type: "string",
-            required: true,
-            maxLength: 34,
-            description: "Account Number / IBAN"
-        },
-        {
-            key: "ROUTING_CODE",
-            label: "Routing / Sort / Branch Code",
-            type: "string",
-            required: false,
-            maxLength: 20,
-            description: "Bank Identifier Code"
-        }
-    ];
+    let fields: BankFieldDefinition[] = [];
+
+    const typeReqs = DESTINATION_REQUIREMENTS[destinationType] || DESTINATION_REQUIREMENTS["BANK_ACCOUNT"];
+    if (typeReqs) {
+        fields = typeReqs[country] || typeReqs["DEFAULT"] || [];
+    }
+
+    if (fields.length === 0) {
+        fields = [
+            {
+                key: "ACCOUNT_NUMBER",
+                label: "Bank Account Number",
+                type: "string",
+                required: true,
+                maxLength: 34,
+                description: "Account Number / Identifier"
+            },
+            {
+                key: "ROUTING_CODE",
+                label: "Routing / Sort / Branch Code",
+                type: "string",
+                required: false,
+                maxLength: 20,
+                description: "Bank Identifier Code"
+            }
+        ];
+    }
 
     const response: BankRequirementResponse = {
         country,
@@ -186,3 +257,4 @@ export const getBankAccountRequirements = async (req: Request, res: Response) =>
 export default {
     getBankAccountRequirements
 };
+

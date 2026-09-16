@@ -15,9 +15,11 @@ import { getAccountCapabilities } from "../controllers/capabilities.controller";
 
 const router = Router();
 
-// Bank Account Requirements (Dynamic UI & Validation Metadata)
+// Bank Account & Payment Requirements (Dynamic UI & Validation Metadata)
 router.get("/bank-account-requirements", getBankAccountRequirements);
 router.get("/v1/bank-account-requirements", getBankAccountRequirements);
+router.get("/payment-requirements", getBankAccountRequirements);
+router.get("/v1/payment-requirements", getBankAccountRequirements);
 
 // Bank Account Verification & Capability Assessment
 router.post("/accounts/verify", verifyBankAccount);
