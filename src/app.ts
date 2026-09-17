@@ -12,18 +12,31 @@ app.use(cors({
 
 app.use(express.json());
 
+import fs from "fs";
 import path from "path";
 
-app.use(express.static(path.join(__dirname, "public")));
+// Find public directory whether in src/, dist/, or project root
+const publicCandidates = [
+    path.join(__dirname, "public"),
+    path.join(__dirname, "../src/public"),
+    path.join(__dirname, "../public"),
+    path.join(process.cwd(), "src", "public"),
+    path.join(process.cwd(), "public"),
+    path.join(process.cwd(), "dist", "public")
+];
+
+const publicDir = publicCandidates.find(p => fs.existsSync(path.join(p, "index.html"))) || path.join(__dirname, "public");
+
+app.use(express.static(publicDir));
 
 // Serve Studio UI on root
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.sendFile(path.join(publicDir, "index.html"));
 });
 
 // Serve Business Central Web Client Simulator
 app.get(["/bc", "/bc-client"], (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "bc.html"));
+    res.sendFile(path.join(publicDir, "bc.html"));
 });
 
 
