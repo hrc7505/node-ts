@@ -148,8 +148,21 @@ export const manualSettlePayment = async (req: Request, res: Response) => {
     return res.json({ success: true, message: "Webhook fired manually", record });
 };
 
+export const getBatchStatus = async (req: Request, res: Response) => {
+    const batchId = (Array.isArray(req.params.id) ? req.params.id[0] : req.params.id) as string;
+    log(`🔍 [GET /batches/${batchId}] Checking batch status`);
+
+    return res.status(200).json({
+        batchId: batchId,
+        status: "SUCCEEDED",
+        batchStatus: "SUCCEEDED",
+        message: "Payment batch settled."
+    });
+};
+
 export default {
     createPayments,
     getPaymentStatus,
+    getBatchStatus,
     manualSettlePayment
 };
