@@ -43,6 +43,10 @@ export const verifyBankAccount = async (req: Request, res: Response) => {
     const {
         vendorNo,
         bankAccountCode,
+        accountCode,
+        accountType,
+        paymentMethod,
+        recipientIdentifier,
         countryCode = "CA",
         currencyCode = "CAD",
         bankBranchNo,
@@ -56,6 +60,12 @@ export const verifyBankAccount = async (req: Request, res: Response) => {
     const errors: string[] = [];
 
     // Extract dynamic or standard fields
+    const recipient = fields.RECIPIENT_IDENTIFIER || recipientIdentifier || "";
+    const isInterac = (String(paymentMethod).toUpperCase().indexOf("INTERAC") >= 0) || 
+                      (String(accountType).toUpperCase().indexOf("RECIPIENT") >= 0) ||
+                      (String(accountType).toUpperCase().indexOf("INTERAC") >= 0) ||
+                      (Boolean(recipient) && !transitNo && !bankAccountNo);
+
     const routingNumber = fields.ROUTING_NUMBER || bankBranchNo || transitNo || "";
     const accountNumber = fields.ACCOUNT_NUMBER || bankAccountNo || "";
     const ifsc = fields.IFSC || bankBranchNo || "";
@@ -63,7 +73,17 @@ export const verifyBankAccount = async (req: Request, res: Response) => {
     const transit = fields.TRANSIT_NUMBER || transitNo || bankBranchNo || "";
     const institution = fields.INSTITUTION_NUMBER || "";
 
-    if (country === "US") {
+    if (isInterac) {
+        if (!recipient) {
+            errors.push("Recipient Identifier (email or mobile) is required for Interac e-Transfer.");
+        } else {
+            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient);
+            const isPhone = /^\+?1?[0-9]{10}$/.test(recipient.replace(/\D/g, ""));
+            if (!isEmail && !isPhone) {
+                errors.push(`Invalid Recipient Identifier: ${recipient}. Must be a valid email or 10-digit Canadian phone number.`);
+            }
+        }
+    } else if (country === "US") {
         if (!routingNumber) {
             errors.push("Routing Number (ROUTING_NUMBER) is required for US bank accounts.");
         } else if (!validateAbaRouting(routingNumber)) {
