@@ -73,6 +73,11 @@ export const verifyBankAccount = async (req: Request, res: Response) => {
     const transit = fields.TRANSIT_NUMBER || transitNo || bankBranchNo || "";
     const institution = fields.INSTITUTION_NUMBER || "";
 
+    const isWire = (String(paymentMethod).toUpperCase() === "WIRE") || 
+                   (String(accountType).toUpperCase() === "WIRETRANSFER") || 
+                   (String(accountType).toUpperCase() === "WIRE");
+    const swift = fields.SWIFT || fields.BIC || (req.body as any).swift || "";
+
     if (isInterac) {
         if (!recipient) {
             errors.push("Recipient Identifier (email or mobile) is required for Interac e-Transfer.");
@@ -82,6 +87,15 @@ export const verifyBankAccount = async (req: Request, res: Response) => {
             if (!isEmail && !isPhone) {
                 errors.push(`Invalid Recipient Identifier: ${recipient}. Must be a valid email or 10-digit Canadian phone number.`);
             }
+        }
+    } else if (isWire) {
+        if (!swift) {
+            errors.push("SWIFT / BIC Code (SWIFT) is required for Wire Transfers.");
+        } else if (!/^[A-Z0-9]{8,11}$/.test(swift.toUpperCase().replace(/\s/g, ""))) {
+            errors.push(`Invalid SWIFT / BIC Code: ${swift}. Must be 8 or 11 alphanumeric characters.`);
+        }
+        if (!accountNumber && !ibanVal) {
+            errors.push("Account Number (ACCOUNT_NUMBER) or IBAN is required for Wire Transfers.");
         }
     } else if (country === "US") {
         if (!routingNumber) {

@@ -207,6 +207,144 @@ const ACCOUNT_REQUIREMENTS: Record<string, Record<string, BankFieldDefinition[]>
     }
 };
 
+const WIRE_REQUIREMENTS: Record<string, BankFieldDefinition[]> = {
+    CA: [
+        {
+            key: "SWIFT",
+            label: "SWIFT / BIC Code",
+            type: "string",
+            required: true,
+            maxLength: 11,
+            regex: "^[A-Z0-9]{8,11}$",
+            description: "8 or 11 character SWIFT/BIC code"
+        },
+        {
+            key: "ACCOUNT_NUMBER",
+            label: "Account Number",
+            type: "string",
+            required: true,
+            maxLength: 12,
+            regex: "^[0-9]{5,12}$",
+            description: "Canadian Bank Account Number"
+        },
+        {
+            key: "TRANSIT_NUMBER",
+            label: "Branch Transit Number",
+            type: "string",
+            required: false,
+            maxLength: 5,
+            regex: "^[0-9]{5}$",
+            description: "5-digit Canadian transit number (optional for domestic wire)"
+        },
+        {
+            key: "INSTITUTION_NUMBER",
+            label: "Financial Institution Number",
+            type: "string",
+            required: false,
+            maxLength: 3,
+            regex: "^[0-9]{3}$",
+            description: "3-digit Canadian institution number (optional for domestic wire)"
+        }
+    ],
+    US: [
+        {
+            key: "SWIFT",
+            label: "SWIFT / BIC Code",
+            type: "string",
+            required: true,
+            maxLength: 11,
+            regex: "^[A-Z0-9]{8,11}$",
+            description: "8 or 11 character SWIFT/BIC code"
+        },
+        {
+            key: "ROUTING_NUMBER",
+            label: "Fedwire Routing (ABA) Number",
+            type: "string",
+            required: true,
+            maxLength: 9,
+            regex: "^[0-9]{9}$",
+            description: "9-digit US ABA routing transit number"
+        },
+        {
+            key: "ACCOUNT_NUMBER",
+            label: "Account Number",
+            type: "string",
+            required: true,
+            maxLength: 17,
+            regex: "^[0-9]{4,17}$",
+            description: "US Bank Account Number"
+        }
+    ],
+    IN: [
+        {
+            key: "SWIFT",
+            label: "SWIFT / BIC Code",
+            type: "string",
+            required: true,
+            maxLength: 11,
+            regex: "^[A-Z0-9]{8,11}$",
+            description: "8 or 11 character SWIFT/BIC code"
+        },
+        {
+            key: "ACCOUNT_NUMBER",
+            label: "Account Number",
+            type: "string",
+            required: true,
+            maxLength: 30,
+            regex: "^[0-9]{9,30}$",
+            description: "Indian Bank Account Number"
+        },
+        {
+            key: "IFSC",
+            label: "IFSC Code",
+            type: "string",
+            required: false,
+            maxLength: 11,
+            regex: "^[A-Z]{4}0[A-Z0-9]{6}$",
+            description: "11-character Indian Financial System Code (optional for wire)"
+        }
+    ],
+    EU: [
+        {
+            key: "BIC",
+            label: "BIC / SWIFT Code",
+            type: "string",
+            required: true,
+            maxLength: 11,
+            regex: "^[A-Z0-9]{8,11}$",
+            description: "SWIFT / BIC Code"
+        },
+        {
+            key: "IBAN",
+            label: "IBAN",
+            type: "string",
+            required: true,
+            maxLength: 34,
+            regex: "^[A-Z]{2}[0-9]{2}[A-Z0-9]{4,30}$",
+            description: "International Bank Account Number"
+        }
+    ],
+    DEFAULT: [
+        {
+            key: "SWIFT",
+            label: "SWIFT / BIC Code",
+            type: "string",
+            required: true,
+            maxLength: 11,
+            regex: "^[A-Z0-9]{8,11}$",
+            description: "8 or 11 character SWIFT/BIC code"
+        },
+        {
+            key: "ACCOUNT_NUMBER",
+            label: "Bank Account Number / IBAN",
+            type: "string",
+            required: true,
+            maxLength: 34,
+            description: "Bank Account Number or IBAN"
+        }
+    ]
+};
+
 export const getBankAccountRequirements = async (req: Request, res: Response) => {
     const country = ((req.query.country || req.query.countryCode || "CA") as string).toUpperCase();
     const paymentMethod = req.query.paymentMethod ? (req.query.paymentMethod as string).toUpperCase() : undefined;
@@ -217,9 +355,14 @@ export const getBankAccountRequirements = async (req: Request, res: Response) =>
 
     let fields: BankFieldDefinition[] = [];
 
-    const typeReqs = ACCOUNT_REQUIREMENTS[accountType] || ACCOUNT_REQUIREMENTS["BANK_ACCOUNT"];
-    if (typeReqs) {
-        fields = typeReqs[country] || typeReqs["DEFAULT"] || [];
+    const isWire = (paymentMethod === "WIRE") || (accountType === "WIRE") || (accountType === "WIRETRANSFER");
+    if (isWire) {
+        fields = WIRE_REQUIREMENTS[country] || (SEPA_COUNTRIES.includes(country) ? WIRE_REQUIREMENTS["EU"] : WIRE_REQUIREMENTS["DEFAULT"]) || [];
+    } else {
+        const typeReqs = ACCOUNT_REQUIREMENTS[accountType] || ACCOUNT_REQUIREMENTS["BANK_ACCOUNT"];
+        if (typeReqs) {
+            fields = typeReqs[country] || typeReqs["DEFAULT"] || [];
+        }
     }
 
     if (fields.length === 0) {
