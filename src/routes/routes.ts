@@ -9,11 +9,17 @@ import cancelScheduledPayments from "../controllers/cancelScheduledPayment.contr
 import fundingAccounts from "../controllers/fundingAccounts.controller";
 import accountTransactions from "../controllers/accountTransactions.controller";
 import { createPayments, getPaymentStatus, getBatchStatus, manualSettlePayment } from "../controllers/payments.controller";
-import { getBankAccountRequirements } from "../controllers/bankRequirements.controller";
+import { getBankAccountRequirements, getCountryPaymentMethods } from "../controllers/bankRequirements.controller";
 import { verifyBankAccount } from "../controllers/bankVerification.controller";
 import { getAccountCapabilities, queryPaymentCapabilities } from "../controllers/capabilities.controller";
 
 const router = Router();
+
+// Country Payment Methods & Capabilities (Dynamic UI Rails)
+router.get("/countries/:countryCode/payment-methods", getCountryPaymentMethods);
+router.get("/v1/countries/:countryCode/payment-methods", getCountryPaymentMethods);
+router.get("/payment-methods", getCountryPaymentMethods);
+router.get("/v1/payment-methods", getCountryPaymentMethods);
 
 // Bank Account & Payment Requirements (Dynamic UI & Validation Metadata)
 router.get("/bank-account-requirements", getBankAccountRequirements);

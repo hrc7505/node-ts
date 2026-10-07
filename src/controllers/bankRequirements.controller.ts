@@ -254,7 +254,91 @@ export const getBankAccountRequirements = async (req: Request, res: Response) =>
     return res.status(200).json(response);
 };
 
+export const getCountryPaymentMethods = async (req: Request, res: Response) => {
+    const country = (
+        (req.params.countryCode || req.query.country || req.query.countryCode || "CA") as string
+    ).toUpperCase();
+
+    log(`🌐 [GET /countries/${country}/payment-methods] Fetching supported payment methods for country ${country}`);
+
+    let supportedMethods = [];
+
+    if (country === "CA") {
+        supportedMethods = [
+            {
+                code: "BANK_ACCOUNT",
+                rail: "EFT",
+                caption: "Bank Account (Canadian EFT)",
+                accountType: 0,
+                defaultCurrency: "CAD",
+                description: "Direct bank deposit via Canadian EFT rail."
+            },
+            {
+                code: "INTERAC",
+                rail: "INTERAC",
+                caption: "Interac e-Transfer",
+                accountType: 1,
+                defaultCurrency: "CAD",
+                description: "Instant recipient payout via Interac e-Transfer."
+            },
+            {
+                code: "WIRE",
+                rail: "WIRE",
+                caption: "Wire Transfer",
+                accountType: 2,
+                defaultCurrency: "CAD",
+                description: "Domestic and international wire transfer."
+            }
+        ];
+    } else if (country === "US") {
+        supportedMethods = [
+            {
+                code: "BANK_ACCOUNT",
+                rail: "ACH",
+                caption: "Bank Account (US ACH)",
+                accountType: 0,
+                defaultCurrency: "USD",
+                description: "Direct bank deposit via US ACH network."
+            },
+            {
+                code: "WIRE",
+                rail: "WIRE",
+                caption: "Wire Transfer",
+                accountType: 2,
+                defaultCurrency: "USD",
+                description: "Domestic and international wire transfer."
+            }
+        ];
+    } else {
+        supportedMethods = [
+            {
+                code: "BANK_ACCOUNT",
+                rail: "WIRE",
+                caption: "Bank Account",
+                accountType: 0,
+                defaultCurrency: country === "IN" ? "INR" : country === "GB" ? "GBP" : "EUR",
+                description: "Direct vendor bank account."
+            },
+            {
+                code: "WIRE",
+                rail: "WIRE",
+                caption: "Wire Transfer",
+                accountType: 2,
+                defaultCurrency: country === "IN" ? "INR" : country === "GB" ? "GBP" : "EUR",
+                description: "International wire transfer."
+            }
+        ];
+    }
+
+    return res.status(200).json({
+        countryCode: country,
+        version: "2026-v1",
+        supportedMethods
+    });
+};
+
 export default {
-    getBankAccountRequirements
+    getBankAccountRequirements,
+    getCountryPaymentMethods
 };
 
