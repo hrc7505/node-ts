@@ -211,7 +211,7 @@ export const getBankAccountRequirements = async (req: Request, res: Response) =>
     const country = ((req.query.country || req.query.countryCode || "CA") as string).toUpperCase();
     const paymentMethod = req.query.paymentMethod ? (req.query.paymentMethod as string).toUpperCase() : undefined;
     const currency = req.query.currency ? (req.query.currency as string).toUpperCase() : undefined;
-    const accountType = ((req.query.accountType || req.query.destinationType || "BANK_ACCOUNT") as string).toUpperCase();
+    const accountType = ((req.query.accountType || "BANK_ACCOUNT") as string).toUpperCase();
 
     log(`📋 [GET /payment-requirements] country=${country}, method=${paymentMethod}, currency=${currency}, accountType=${accountType}`);
 

@@ -41,8 +41,8 @@ export const getAccountCapabilities = async (req: Request, res: Response) => {
 };
 
 export const queryPaymentCapabilities = async (req: Request, res: Response) => {
-    const { vendorNo, currency, amount, vendorEnabled, destination, account } = req.body || {};
-    const targetAccount = account || destination;
+    const { vendorNo, currency, amount, vendorEnabled, account } = req.body || {};
+    const targetAccount = account;
     const reqCurrency = (currency || 'CAD').toUpperCase();
     const reqAmount = typeof amount === 'number' ? amount : (amount ? parseFloat(amount) : 0);
     log(`🔎 [POST /payments/capabilities] Evaluating capabilities for vendor: ${vendorNo}, currency: ${reqCurrency}, amount: ${reqAmount}`);
