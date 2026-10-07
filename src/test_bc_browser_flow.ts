@@ -44,23 +44,23 @@ async function runBusinessCentralBrowserFlow() {
     await page.screenshot({ path: scJournalPath, fullPage: true });
     console.log(`📸 Journal screenshot saved to: ${scJournalPath}`);
 
-    // 3. Test Vendor Card & Chiizu Destinations
-    console.log("\n3️⃣ Inspecting Vendor Card & Chiizu Destinations tab...");
+    // 3. Test Vendor Card & Chiizu Payment Accounts
+    console.log("\n3️⃣ Inspecting Vendor Card & Chiizu Payment Accounts tab...");
     await page.click("#tab-vendor");
     await page.waitForTimeout(500);
     const vendorHandle = await page.inputValue("#vendor-interac-handle");
     console.log(`Vendor Interac Recipient Handle: ${vendorHandle}`);
 
-    console.log("Switching to Chiizu Destinations...");
-    await page.click("#tab-destinations");
+    console.log("Switching to Chiizu Payment Accounts...");
+    await page.click("#tab-accounts");
     await page.waitForTimeout(500);
-    console.log("Clicking 'Verify Destination with Chiizu'...");
-    await page.click("button:has-text('Verify Destination with Chiizu')");
+    console.log("Clicking 'Verify Account with Chiizu'...");
+    await page.click("button:has-text('Verify Account with Chiizu')");
     await page.waitForTimeout(1000);
 
     const destStatus = await page.textContent("#dest-verif-status");
     const destRef = await page.textContent("#dest-ref-id");
-    console.log(`✅ Destination Verification Status: ${destStatus}, Ref ID: ${destRef}`);
+    console.log(`✅ Account Verification Status: ${destStatus}, Ref ID: ${destRef}`);
 
     // 4. Test Approval Workflow Trigger & Automatic Intent Outbox
     console.log("\n4️⃣ Simulating Native BC Manager Approval...");

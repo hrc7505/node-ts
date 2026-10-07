@@ -337,7 +337,7 @@
     <div class="bc-nav-tabs">
         <div class="bc-tab active" id="tab-journal" onclick="switchTab('journal')">Payment Journals (Chiizu)</div>
         <div class="bc-tab" id="tab-vendor" onclick="switchTab('vendor')">Vendor Card (Fabrikam)</div>
-        <div class="bc-tab" id="tab-destinations" onclick="switchTab('destinations')">Chiizu Destinations</div>
+        <div class="bc-tab" id="tab-accounts" onclick="switchTab('accounts')">Chiizu Payment Accounts</div>
         <div class="bc-tab" id="tab-outbox" onclick="switchTab('outbox')">Payment Intents (Outbox)</div>
     </div>
 
@@ -367,7 +367,7 @@
                             <th>Vendor Name</th>
                             <th>Amount (CAD)</th>
                             <th>Payment Rail</th>
-                            <th>Destination</th>
+                            <th>Payment Account</th>
                             <th>Chiizu Preparation</th>
                             <th>Payment Status</th>
                             <th>BC Posting</th>
@@ -452,17 +452,17 @@
             </div>
         </div>
 
-        <!-- VIEW 3: CHIIZU DESTINATIONS -->
-        <div class="view-section" id="view-destinations">
+        <!-- VIEW 3: CHIIZU PAYMENT ACCOUNTS -->
+        <div class="view-section" id="view-accounts">
             <div class="bc-card">
                 <div class="bc-card-header">
-                    <span>Chiizu Vendor Destinations (Non-Bank & Recipient Registry)</span>
-                    <button class="bc-btn bc-btn-primary" onclick="verifyDestination()">Verify Destination with Chiizu</button>
+                    <span>Chiizu Vendor Payment Accounts (Non-Bank & Recipient Registry)</span>
+                    <button class="bc-btn bc-btn-primary" onclick="verifyAccount()">Verify Account with Chiizu</button>
                 </div>
                 <table class="bc-table">
                     <thead>
                         <tr>
-                            <th>Destination Code</th>
+                            <th>Account Code</th>
                             <th>Type</th>
                             <th>Rail</th>
                             <th>Recipient Handle</th>
@@ -477,8 +477,8 @@
                             <td>Recipient</td>
                             <td>INTERAC</td>
                             <td>payments@fabrikam.ca</td>
-                            <td><code id="dest-ref-id">dest_chz_91823ab</code></td>
-                            <td><span class="bc-badge bc-badge-success" id="dest-verif-status">Verified</span></td>
+                            <td><code id="acct-ref-id">acct_chz_91823ab</code></td>
+                            <td><span class="bc-badge bc-badge-success" id="acct-verif-status">Verified</span></td>
                             <td>Yes</td>
                         </tr>
                     </tbody>
@@ -565,12 +565,12 @@
                 `;
             } else if (currentTab === 'vendor') {
                 actions.innerHTML = `
-                    <button class="bc-btn" onclick="switchTab('destinations')">Chiizu Destinations</button>
+                    <button class="bc-btn" onclick="switchTab('accounts')">Chiizu Payment Accounts</button>
                     <button class="bc-btn bc-btn-primary" onclick="alert('Vendor changes saved.')">Save</button>
                 `;
-            } else if (currentTab === 'destinations') {
+            } else if (currentTab === 'accounts') {
                 actions.innerHTML = `
-                    <button class="bc-btn bc-btn-primary" onclick="verifyDestination()">Verify with Chiizu</button>
+                    <button class="bc-btn bc-btn-primary" onclick="verifyAccount()">Verify with Chiizu</button>
                 `;
             } else if (currentTab === 'outbox') {
                 actions.innerHTML = `
@@ -590,7 +590,7 @@
             const titleMap = {
                 'journal': 'Payment Journal: CHIIZU Batch',
                 'vendor': 'Vendor Card: VEND-10000 Fabrikam Inc.',
-                'destinations': 'Chiizu Payment Destinations',
+                'accounts': 'Chiizu Payment Accounts',
                 'outbox': 'Payment Intent Outbox & Background Dispatcher'
             };
             document.getElementById('view-title').textContent = titleMap[tabId];
@@ -688,7 +688,7 @@
             }
         }
 
-        async function verifyDestination() {
+        async function verifyAccount() {
             const handle = document.getElementById('vendor-interac-handle').value;
             const res = await fetch('/v1/accounts/verify', {
                 method: 'POST',
@@ -707,10 +707,10 @@
                 })
             });
             const data = await res.json();
-            const refId = data.accountRefId || ('dest_chz_' + Math.random().toString(36).substring(2, 10));
-            document.getElementById('dest-ref-id').textContent = refId;
-            document.getElementById('dest-verif-status').textContent = 'Verified';
-            alert('Chiizu Destination verified successfully: ' + refId);
+            const refId = data.accountRefId || ('acct_chz_' + Math.random().toString(36).substring(2, 10));
+            document.getElementById('acct-ref-id').textContent = refId;
+            document.getElementById('acct-verif-status').textContent = 'Verified';
+            alert('Chiizu Payment Account verified successfully: ' + refId);
         }
 
         // Initialize

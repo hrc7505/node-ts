@@ -9,7 +9,7 @@ async function runBrowserVerification() {
 
     // 1. Navigate to server health endpoint
     console.log("Navigating to Chiizu Integration API...");
-    const response = await page.goto("http://localhost:8080/v1/payment-requirements?country=CA&destinationType=RECIPIENT");
+    const response = await page.goto("http://localhost:8080/v1/payment-requirements?country=CA&accountType=RECIPIENT");
     console.log("HTTP Response Status:", response?.status());
 
     const content = await page.content();

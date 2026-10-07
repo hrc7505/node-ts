@@ -307,8 +307,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="req-dest-type">Destination Type</label>
-                    <select id="req-dest-type">
+                    <label for="req-acct-type">Account Type</label>
+                    <select id="req-acct-type">
                         <option value="BANK_ACCOUNT">Bank Account</option>
                         <option value="RECIPIENT">Recipient (Interac e-Transfer)</option>
                         <option value="UPI">UPI Virtual Address</option>
@@ -319,14 +319,14 @@
                 <div class="result-box" id="req-result">// Requirements schema output will appear here...</div>
             </div>
 
-            <!-- 2. Account & Destination Verification -->
+            <!-- 2. Account & Payment Verification -->
             <div class="card" id="card-verification">
                 <div class="card-header">
                     <div class="card-icon">🔐</div>
-                    <div class="card-title">2. Destination Verification</div>
+                    <div class="card-title">2. Account Verification</div>
                 </div>
                 <div class="form-group">
-                    <label for="verif-country">Destination Country</label>
+                    <label for="verif-country">Country</label>
                     <select id="verif-country">
                         <option value="CA">Canada (CAD)</option>
                         <option value="US">United States (USD)</option>
@@ -383,12 +383,12 @@
         // 1. Fetch Dynamic Requirements
         document.getElementById('btn-fetch-req').addEventListener('click', async () => {
             const country = document.getElementById('req-country').value;
-            const destinationType = document.getElementById('req-dest-type').value;
+            const accountType = document.getElementById('req-acct-type').value;
             const resBox = document.getElementById('req-result');
             resBox.textContent = 'Fetching schema from Chiizu API...';
 
             try {
-                const res = await fetch(`/v1/payment-requirements?country=${country}&destinationType=${destinationType}`);
+                const res = await fetch(`/v1/payment-requirements?country=${country}&accountType=${accountType}`);
                 const data = await res.json();
                 resBox.textContent = JSON.stringify(data, null, 2);
             } catch (err) {
@@ -396,7 +396,7 @@
             }
         });
 
-        // 2. Destination Verification
+        // 2. Account Verification
         document.getElementById('btn-verify').addEventListener('click', async () => {
             const country = document.getElementById('verif-country').value;
             const transit = document.getElementById('verif-transit').value;

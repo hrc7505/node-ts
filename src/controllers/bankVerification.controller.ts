@@ -135,7 +135,7 @@ export const verifyBankAccount = async (req: Request, res: Response) => {
             currency: "CAD",
             minAmount: 1.0,
             maxAmount: 3000.0,
-            reason: country === "CA" ? "" : "Interac is only available for Canadian destinations"
+            reason: country === "CA" ? "" : "Interac is only available for Canadian accounts"
         },
         {
             paymentMethod: "WIRE",
@@ -156,6 +156,7 @@ export const verifyBankAccount = async (req: Request, res: Response) => {
         verifiedAt,
         capabilityVersion: "2026-v1",
         capabilities,
+        paymentCapabilities: capabilities,
         message: "Vendor bank account successfully verified with Chiizu."
     });
 };

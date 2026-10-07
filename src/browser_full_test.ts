@@ -23,8 +23,8 @@ async function runFullBrowserTest() {
     const reqResult = await page.textContent("#req-result");
     console.log("📋 Dynamic Requirements Result Output:\n", reqResult);
 
-    // 2. Interactive Destination Verification Test
-    console.log("\n3️⃣ Interacting with Destination Verification Card...");
+    // 2. Interactive Account Verification Test
+    console.log("\n3️⃣ Interacting with Account Verification Card...");
     await page.selectOption("#verif-country", "CA");
     await page.fill("#verif-transit", "12345");
     await page.fill("#verif-account", "987654321");

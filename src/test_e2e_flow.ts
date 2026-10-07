@@ -29,7 +29,7 @@ async function runE2ETest() {
     const req1 = await makeRequest({
         hostname: "localhost",
         port: 8080,
-        path: "/v1/payment-requirements?country=CA&destinationType=RECIPIENT",
+        path: "/v1/payment-requirements?country=CA&accountType=RECIPIENT",
         method: "GET"
     });
     console.log("Status:", req1.statusCode);
@@ -44,7 +44,7 @@ async function runE2ETest() {
     const req2 = await makeRequest({
         hostname: "localhost",
         port: 8080,
-        path: "/v1/payment-requirements?country=US&destinationType=BANK_ACCOUNT",
+        path: "/v1/payment-requirements?country=US&accountType=BANK_ACCOUNT",
         method: "GET"
     });
     console.log("Status:", req2.statusCode);
