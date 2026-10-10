@@ -18,8 +18,26 @@ export type PaymentRecord = {
     settledAt?: string;
 };
 
+export type WebhookConfig = {
+    tenantId: string;
+    companyId?: string;
+    companyName?: string;
+    webhookCallbackUrl: string;
+    events?: string[];
+    registeredAt: string;
+};
+
 const batches = new Map<string, Batch>();
 const payments = new Map<string, PaymentRecord>();
+let registeredWebhookConfig: WebhookConfig | null = null;
+
+export function saveWebhookConfig(config: WebhookConfig) {
+    registeredWebhookConfig = config;
+}
+
+export function getWebhookConfig(): WebhookConfig | null {
+    return registeredWebhookConfig;
+}
 
 export function saveBatch(batch: Batch) {
     batches.set(batch.batchId, batch);
@@ -37,3 +55,4 @@ export function savePayment(payment: PaymentRecord) {
 export function getPayment(paymentId: string): PaymentRecord | undefined {
     return payments.get(paymentId);
 }
+

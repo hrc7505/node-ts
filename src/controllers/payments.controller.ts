@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { log } from "node:console";
 import { waitUntil } from "@vercel/functions";
 import sendWebhook from "../services/webhookService";
-import { savePayment, getPayment, PaymentRecord } from "../store/batchStore";
+import { savePayment, getPayment, getWebhookConfig, PaymentRecord } from "../store/batchStore";
 
 const WEBHOOK_DELAY_MS = process.env.WEBHOOK_DELAY_MS ? parseInt(process.env.WEBHOOK_DELAY_MS) : 5000;
 
@@ -26,9 +26,10 @@ export const createPayments = async (req: Request, res: Response) => {
     log("Body:", JSON.stringify(req.body, null, 2));
 
     const { requestId, idempotencyKey, callbackUrl, payments, source } = req.body;
+    const effectiveCallbackUrl = callbackUrl || getWebhookConfig()?.webhookCallbackUrl;
 
-    if (!callbackUrl) {
-        return res.status(400).json({ error: "callbackUrl is required." });
+    if (!effectiveCallbackUrl) {
+        return res.status(400).json({ error: "callbackUrl is required (not provided in request body and no registered webhook callback found)." });
     }
 
     if (!Array.isArray(payments) || payments.length === 0) {
@@ -49,7 +50,7 @@ export const createPayments = async (req: Request, res: Response) => {
             status: "PENDING",
             amount: p.amount,
             sourceDocument: p.sourceDocument,
-            callbackUrl,
+            callbackUrl: effectiveCallbackUrl,
             createdAt: new Date().toISOString()
         };
 
@@ -58,6 +59,7 @@ export const createPayments = async (req: Request, res: Response) => {
         responsePayments.push({
             paymentId,
             chiizuPaymentId,
+
             status: "PENDING",
             estimatedSettlementDate: new Date(Date.now() + 86400000).toISOString()
         });
@@ -84,9 +86,10 @@ export const createPayments = async (req: Request, res: Response) => {
                 timestamp: settledAt
             };
 
-            await sendWebhook(callbackUrl, webhookPayload);
+            await sendWebhook(paymentRecord.callbackUrl, webhookPayload);
         });
     });
+
 
     // Immediate synchronous response (PROCESSING / PENDING)
     return res.status(201).json({

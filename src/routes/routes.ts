@@ -53,12 +53,16 @@ router.get("/accounts", fundingAccounts);
 router.get("/funding-accounts/:accountId/transactions", accountTransactions);
 router.get("/accounts/:accountId/transactions", accountTransactions);
 
-// BC Legacy Integration Endpoints
+// BC Integration & Webhook Registration Endpoints
+router.post("/connect-chiizu", connectChiizu);
+router.post("/v1/connect-chiizu", connectChiizu);
+router.post("/webhooks/register", connectChiizu);
+router.post("/v1/webhooks/register", connectChiizu);
 router.post("/create-payment", makePayment);
 router.post("/schedule-payment", schedulePayment);
 router.post("/cancel-scheduled-payment", cancelScheduledPayments);
-router.post("/connect-chiizu", connectChiizu);
 router.post("/disconnect-chiizu", disconnectChiizu);
+
 
 // AlphaPay
 router.post("/pay", pay);
