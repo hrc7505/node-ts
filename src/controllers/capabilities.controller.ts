@@ -29,6 +29,22 @@ export const getAccountCapabilities = async (req: Request, res: Response) => {
             minAmount: 100.0,
             maxAmount: 1000000.0,
             reason: ""
+        },
+        {
+            paymentMethod: "ACH",
+            available: true,
+            currency: "USD",
+            minAmount: 0.01,
+            maxAmount: 1000000.0,
+            reason: ""
+        },
+        {
+            paymentMethod: "SEPA",
+            available: true,
+            currency: "EUR",
+            minAmount: 0.01,
+            maxAmount: 500000.0,
+            reason: ""
         }
     ];
 
@@ -156,6 +172,71 @@ export const queryPaymentCapabilities = async (req: Request, res: Response) => {
         wireMissingReqs = "Verify bank account through Chiizu verification wizard.";
     }
 
+    // 4. US ACH RAIL
+    let achEligible = isEnabled;
+    let achReasonCode = isEnabled ? "NONE" : "VENDOR_DISABLED";
+    let achReasonText = isEnabled ? "Eligible for US ACH disbursement" : "Vendor is not enabled for Chiizu payments.";
+    let achMissingReqs = "";
+
+    if (!isEnabled) {
+        // already VENDOR_DISABLED
+    } else if (currency && reqCurrency !== "USD" && reqCurrency !== "CAD") {
+        achEligible = false;
+        achReasonCode = "CURRENCY_NOT_SUPPORTED";
+        achReasonText = `ACH requires USD currency (requested: ${reqCurrency}).`;
+        achMissingReqs = "Change line currency to USD, or use WIRE transfer for foreign currencies.";
+    } else if (reqAmount > 0 && reqAmount > 1000000.0) {
+        achEligible = false;
+        achReasonCode = "AMOUNT_LIMIT_EXCEEDED";
+        achReasonText = `Amount (${reqAmount}) exceeds US ACH single limit ($1,000,000 USD).`;
+        achMissingReqs = "Split transaction or use WIRE for high-value disbursements.";
+    } else if (!isAccountActive) {
+        achEligible = false;
+        achReasonCode = "ACCOUNT_DISABLED";
+        achReasonText = "Payment account is marked inactive.";
+        achMissingReqs = "Activate payment account on Vendor Card > Chiizu tab.";
+    } else if (targetAccount && targetAccount.type === "RECIPIENT") {
+        achEligible = false;
+        achReasonCode = "METHOD_NOT_SUPPORTED";
+        achReasonText = "ACH disbursement requires a vendor bank account, not a recipient handle.";
+        achMissingReqs = "Configure vendor bank account or select Interac e-Transfer rail.";
+    } else if (!isAccountVerified) {
+        achEligible = false;
+        achReasonCode = "NOT_VERIFIED";
+        achReasonText = "Bank account is not verified with Chiizu.";
+        achMissingReqs = "Verify bank account through Chiizu verification wizard.";
+    }
+
+    // 5. EUROPEAN SEPA RAIL
+    let sepaEligible = isEnabled;
+    let sepaReasonCode = isEnabled ? "NONE" : "VENDOR_DISABLED";
+    let sepaReasonText = isEnabled ? "Eligible for SEPA Credit Transfer" : "Vendor is not enabled for Chiizu payments.";
+    let sepaMissingReqs = "";
+
+    if (!isEnabled) {
+        // already VENDOR_DISABLED
+    } else if (currency && reqCurrency !== "EUR") {
+        sepaEligible = false;
+        sepaReasonCode = "CURRENCY_NOT_SUPPORTED";
+        sepaReasonText = `SEPA requires EUR currency (requested: ${reqCurrency}).`;
+        sepaMissingReqs = "Change line currency to EUR, or use WIRE transfer.";
+    } else if (reqAmount > 0 && reqAmount > 500000.0) {
+        sepaEligible = false;
+        sepaReasonCode = "AMOUNT_LIMIT_EXCEEDED";
+        sepaReasonText = `Amount (${reqAmount}) exceeds SEPA single limit (500,000 EUR).`;
+        sepaMissingReqs = "Split transaction or use WIRE for high-value disbursements.";
+    } else if (!isAccountActive) {
+        sepaEligible = false;
+        sepaReasonCode = "ACCOUNT_DISABLED";
+        sepaReasonText = "Payment account is marked inactive.";
+        sepaMissingReqs = "Activate payment account on Vendor Card > Chiizu tab.";
+    } else if (targetAccount && targetAccount.type === "RECIPIENT") {
+        sepaEligible = false;
+        sepaReasonCode = "METHOD_NOT_SUPPORTED";
+        sepaReasonText = "SEPA requires a vendor bank account.";
+        sepaMissingReqs = "Configure vendor bank account with IBAN.";
+    }
+
     const capabilities = [
         {
             railCode: "EFT",
@@ -195,6 +276,32 @@ export const queryPaymentCapabilities = async (req: Request, res: Response) => {
             currencyCode: reqCurrency,
             estimatedSettlement: "Same day / Next business day",
             missingRequirements: wireMissingReqs
+        },
+        {
+            railCode: "ACH",
+            railName: "US ACH",
+            eligible: achEligible,
+            reasonCode: achReasonCode,
+            reasonText: achReasonText,
+            minAmount: 0.01,
+            maxAmount: 1000000.0,
+            feeAmount: 1.00,
+            currencyCode: "USD",
+            estimatedSettlement: "1-3 Business Days",
+            missingRequirements: achMissingReqs
+        },
+        {
+            railCode: "SEPA",
+            railName: "SEPA Credit Transfer",
+            eligible: sepaEligible,
+            reasonCode: sepaReasonCode,
+            reasonText: sepaReasonText,
+            minAmount: 0.01,
+            maxAmount: 500000.0,
+            feeAmount: 1.50,
+            currencyCode: "EUR",
+            estimatedSettlement: "1-2 Business Days",
+            missingRequirements: sepaMissingReqs
         }
     ];
 
