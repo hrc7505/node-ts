@@ -157,8 +157,8 @@ export const getBatchStatus = async (req: Request, res: Response) => {
 
     return res.status(200).json({
         batchId: batchId,
-        status: "SUCCEEDED",
-        batchStatus: "SUCCEEDED",
+        status: "SETTLED",
+        batchStatus: "SETTLED",
         message: "Payment batch settled."
     });
 };
