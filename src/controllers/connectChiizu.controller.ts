@@ -7,8 +7,17 @@ const connectChiizu = async (req: Request, res: Response) => {
     log("Headers:", JSON.stringify(req.headers));
     log("Body:", JSON.stringify(req.body, null, 2));
 
-    const { webhookCallbackUrl, callbackUrl, companyId, companyName, events } = req.body || {};
-    const targetCallbackUrl = webhookCallbackUrl || callbackUrl;
+    const { webhookCallbackUrl, callbackUrl, companyName, companyId, events } = req.body || {};
+    const bcUrl = webhookCallbackUrl || callbackUrl;
+    const targetCallbackUrl = bcUrl;
+
+    // 🚀 Print clearly so it's easy to spot and copy in runtime logs:
+    console.log('====================================================');
+    console.log('🎯 [BC WEBHOOK REGISTERED]');
+    console.log('🎯 [BC WEBHOOK URL]:', bcUrl);
+    console.log('🏢 Company:', companyName || companyId);
+    console.log('🔗 URL:', bcUrl);
+    console.log('====================================================');
 
     if (targetCallbackUrl) {
         saveWebhookConfig({
@@ -28,12 +37,12 @@ const connectChiizu = async (req: Request, res: Response) => {
         success: true,
         status: "connected",
         tenantId: "chiizu-tenant-001",
+        registeredUrl: bcUrl,
         webhookCallbackUrl: targetCallbackUrl || currentConfig?.webhookCallbackUrl || "",
-        message: targetCallbackUrl
-            ? "Chiizu connected and webhook callback URL registered successfully."
-            : "Chiizu connected successfully."
+        message: 'Chiizu connected successfully! Webhook callback URL registered.'
     });
 };
 
 export default connectChiizu;
+
 
