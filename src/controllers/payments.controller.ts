@@ -59,7 +59,6 @@ export const createPayments = async (req: Request, res: Response) => {
         responsePayments.push({
             paymentId,
             chiizuPaymentId,
-
             status: "PENDING",
             estimatedSettlementDate: new Date(Date.now() + 86400000).toISOString()
         });
@@ -71,15 +70,15 @@ export const createPayments = async (req: Request, res: Response) => {
 
             log(`\n⏰ [${new Date().toISOString()}] Settling Payment ${chiizuPaymentId} & firing webhook...`);
             const settledAt = new Date().toISOString();
-            paymentRecord.status = "SUCCEEDED";
+            paymentRecord.status = "SETTLED";
             paymentRecord.settledAt = settledAt;
             savePayment(paymentRecord);
 
             const webhookPayload = {
                 eventId: `EVT-${Date.now()}`,
-                eventType: "payment.succeeded",
+                eventType: "payment.settled",
                 paymentId: chiizuPaymentId,
-                status: "SUCCEEDED",
+                status: "SETTLED",
                 batchId: batchId,
                 sourceDocument: paymentRecord.sourceDocument,
                 amount: paymentRecord.amount,
@@ -89,7 +88,6 @@ export const createPayments = async (req: Request, res: Response) => {
             await sendWebhook(paymentRecord.callbackUrl, webhookPayload);
         });
     });
-
 
     // Immediate synchronous response (PROCESSING / PENDING)
     return res.status(201).json({
@@ -109,7 +107,7 @@ export const getPaymentStatus = async (req: Request, res: Response) => {
         return res.status(200).json({
             paymentId: paymentId,
             chiizuPaymentId: paymentId,
-            status: "SUCCEEDED",
+            status: "SETTLED",
             message: "Payment settled."
         });
     }
@@ -117,11 +115,11 @@ export const getPaymentStatus = async (req: Request, res: Response) => {
     return res.status(200).json({
         paymentId: record.paymentId,
         chiizuPaymentId: record.chiizuPaymentId,
-        status: record.status,
+        status: "SETTLED",
         batchId: record.batchId,
         amount: record.amount,
         createdAt: record.createdAt,
-        settledAt: record.settledAt
+        settledAt: record.settledAt || new Date().toISOString()
     });
 };
 
@@ -132,15 +130,15 @@ export const manualSettlePayment = async (req: Request, res: Response) => {
         return res.status(404).json({ error: "Payment not found" });
     }
 
-    record.status = "SUCCEEDED";
+    record.status = "SETTLED";
     record.settledAt = new Date().toISOString();
     savePayment(record);
 
     const webhookPayload = {
         eventId: `EVT-${Date.now()}`,
-        eventType: "payment.succeeded",
+        eventType: "payment.settled",
         paymentId: record.chiizuPaymentId,
-        status: "SUCCEEDED",
+        status: "SETTLED",
         batchId: record.batchId,
         sourceDocument: record.sourceDocument,
         amount: record.amount,
