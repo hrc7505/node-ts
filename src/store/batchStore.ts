@@ -3,14 +3,14 @@ export type Batch = {
     callbackUrl: string;
     vendorNo: string;
     invoices: any[];
-    status: 'Processing' | 'Paid' | 'Failed';
+    status: 'Processing' | 'Paid' | 'Failed' | 'Settled';
 };
 
 export type PaymentRecord = {
     paymentId: string;
     chiizuPaymentId: string;
     batchId: string;
-    status: 'PENDING' | 'PROCESSING' | 'SUCCEEDED' | 'FAILED';
+    status: 'PENDING' | 'PROCESSING' | 'SUCCEEDED' | 'SETTLED' | 'FAILED';
     amount?: any;
     sourceDocument?: any;
     callbackUrl: string;
@@ -55,4 +55,3 @@ export function savePayment(payment: PaymentRecord) {
 export function getPayment(paymentId: string): PaymentRecord | undefined {
     return payments.get(paymentId);
 }
-
