@@ -219,13 +219,13 @@ const WIRE_REQUIREMENTS: Record<string, BankFieldDefinition[]> = {
             description: "8 or 11 character SWIFT/BIC code"
         },
         {
-            key: "ACCOUNT_NUMBER",
-            label: "Account Number",
+            key: "INSTITUTION_NUMBER",
+            label: "Financial Institution Number",
             type: "string",
-            required: true,
-            maxLength: 12,
-            regex: "^[0-9]{5,12}$",
-            description: "Canadian Bank Account Number"
+            required: false,
+            maxLength: 3,
+            regex: "^[0-9]{3}$",
+            description: "3-digit Canadian institution number (optional for domestic wire)"
         },
         {
             key: "TRANSIT_NUMBER",
@@ -237,14 +237,14 @@ const WIRE_REQUIREMENTS: Record<string, BankFieldDefinition[]> = {
             description: "5-digit Canadian transit number (optional for domestic wire)"
         },
         {
-            key: "INSTITUTION_NUMBER",
-            label: "Financial Institution Number",
+            key: "ACCOUNT_NUMBER",
+            label: "Account Number",
             type: "string",
-            required: false,
-            maxLength: 3,
-            regex: "^[0-9]{3}$",
-            description: "3-digit Canadian institution number (optional for domestic wire)"
-        }
+            required: true,
+            maxLength: 12,
+            regex: "^[0-9]{5,12}$",
+            description: "Canadian Bank Account Number"
+        },
     ],
     US: [
         {
