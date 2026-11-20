@@ -51,15 +51,6 @@ const COUNTRY_REQUIREMENTS: Record<string, BankFieldDefinition[]> = {
     ],
     CA: [
         {
-            key: "TRANSIT_NUMBER",
-            label: "Branch Transit Number",
-            type: "string",
-            required: true,
-            maxLength: 5,
-            regex: "^[0-9]{5}$",
-            description: "5-digit Canadian branch transit number"
-        },
-        {
             key: "INSTITUTION_NUMBER",
             label: "Financial Institution Number",
             type: "string",
@@ -67,6 +58,15 @@ const COUNTRY_REQUIREMENTS: Record<string, BankFieldDefinition[]> = {
             maxLength: 3,
             regex: "^[0-9]{3}$",
             description: "3-digit Canadian financial institution number"
+        },
+        {
+            key: "TRANSIT_NUMBER",
+            label: "Branch Transit Number",
+            type: "string",
+            required: true,
+            maxLength: 5,
+            regex: "^[0-9]{5}$",
+            description: "5-digit Canadian branch transit number"
         },
         {
             key: "ACCOUNT_NUMBER",
